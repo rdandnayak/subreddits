@@ -21,8 +21,10 @@ class Post extends React.PureComponent {
             const num_comments = item.data.num_comments
             const ups = item.data.ups
             return (
-              <Media key={index}>
-                {thumbnail ? (
+              <Media
+                key={index}
+                style={{ marginBottom: '20px', marginTop: '20px' }}>
+                {thumbnail && thumbnail !== 'self' ? (
                   <img
                     width={64}
                     height={64}
@@ -30,10 +32,16 @@ class Post extends React.PureComponent {
                     src={thumbnail}
                   />
                 ) : (
-                  ''
+                  <img
+                    width={64}
+                    height={64}
+                    className="mr-3"
+                    src={'http://placehold.it/64x64'}
+                  />
                 )}
                 <Media.Body>
-                  <h5>{title}</h5> Commnetns ({num_comments}) Upvotes({ups})
+                  <h5>{title}</h5> <i class="fas fa-comments" /> ({num_comments}
+                  ) <i class="far fa-thumbs-up" />({ups})
                 </Media.Body>
               </Media>
             )

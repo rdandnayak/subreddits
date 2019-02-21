@@ -9,6 +9,7 @@ import Card from 'react-bootstrap/Card'
 import Media from 'react-bootstrap/Media'
 import Button from 'react-bootstrap/Button'
 import Post from '../post'
+import Spinner from 'react-spinkit'
 
 import {
   increment,
@@ -23,6 +24,7 @@ class Home extends PureComponent {
     super(props)
     this.state = {
       list: [],
+      loader: true,
       selectedSubReddit: {},
       subreddits: [
         'alternativeart',
@@ -39,8 +41,13 @@ class Home extends PureComponent {
     }
   }
 
-  selectCard = item => {
+  selectCard = (e, item) => {
     this.setState({ selectedSubReddit: item })
+    var elems = document.querySelectorAll('.active')
+    ;[].forEach.call(elems, function(el) {
+      el.classList.remove('active')
+    })
+    e.target.parentElement.className += ' active'
     // console.warn(item)
   }
 
@@ -57,15 +64,36 @@ class Home extends PureComponent {
       })
     })
     Promise.all(promiseList).then(function(values) {
-      self.setState({ list: values })
+      setTimeout(() => {
+        self.setState({ list: values, loader: false })
+      }, 0)
       console.log(values)
     })
   }
   render() {
     const props = this.props
-    const { list, selectedSubReddit } = this.state
+    const { list, selectedSubReddit, loader } = this.state
     return (
       <Row>
+        <section
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            zIndex: 999,
+            opacity: 0.5,
+            width: '100%',
+            height: '100%',
+            background: 'black',
+            display: !loader ? 'none' : ''
+          }}
+          className="spinerWrapper">
+          <Spinner
+            style={{ position: 'fixed', left: '50%', top: '50%', zIndex: 9999 }}
+            name="cube-grid"
+            color="white"
+          />
+        </section>
         <section
           id="postSlider"
           style={{ overflow: 'auto', whiteSpace: 'nowrap' }}>
@@ -80,8 +108,9 @@ class Home extends PureComponent {
               const title = item.data.children[1].data.title
               return (
                 <Card
-                  onClick={() => this.selectCard(item)}
+                  onClick={e => this.selectCard(e, item)}
                   key={index}
+                  className="subreddit"
                   style={{
                     width: '18rem',
                     float: 'left',

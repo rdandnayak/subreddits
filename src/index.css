@@ -15,3 +15,7 @@ body {
 button:disabled {
   opacity: 0.5;
 }
+
+.active {
+  border: 2px dotted orange;
+}
